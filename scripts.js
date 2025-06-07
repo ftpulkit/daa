@@ -89,7 +89,7 @@ int main() {
 `,
 
   quickSort: `
-  #include <stdio.h>
+#include <stdio.h>
 
 void swap(int *a, int *b) {
     int t = *a;
@@ -98,18 +98,19 @@ void swap(int *a, int *b) {
 }
 
 int partition(int a[], int low, int high) {
-    int pivot = a[high];
-    int i = low - 1;
+    int pivot = a[low];  // pivot is the first element now
+    int i = low + 1;
+    int j = high;
 
-    for (int j = low; j < high; j++) {
-        if (a[j] < pivot) {
-            i++;
+    while (i <= j) {
+        while (i <= high && a[i] <= pivot) i++;
+        while (a[j] > pivot) j--;
+        if (i < j) {
             swap(&a[i], &a[j]);
         }
     }
-
-    swap(&a[i + 1], &a[high]);
-    return i + 1;
+    swap(&a[low], &a[j]); // place pivot in correct position
+    return j;
 }
 
 void quick_sort(int a[], int low, int high) {
@@ -132,6 +133,7 @@ int main() {
 
     return 0;
 }
+
 `,
 
   bfs: `#include <stdio.h>
