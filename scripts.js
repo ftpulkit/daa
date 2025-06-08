@@ -138,51 +138,49 @@ int main() {
 
   bfs: `#include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-struct Node {
-    int data;
-    struct Node *left, *right;
-};
+#define MAX 100
 
-struct Node* newNode(int data) {
-    struct Node* node = malloc(sizeof(struct Node));
-    node->data = data;
-    node->left = node->right = NULL;
-    return node;
-}
+int adj[MAX][MAX], queue[MAX], visited[MAX];
+int front = 0, rear = -1;
 
-// Get height of the tree
-int height(struct Node* root) {
-    if (root == NULL) return 0;
-    int lh = height(root->left);
-    int rh = height(root->right);
-    return (lh > rh ? lh : rh) + 1;
-}
+void enqueue(int v) { queue[++rear] = v; }
+int dequeue() { return queue[front++]; }
 
-void printLevel(struct Node* root, int level) {
-    if (root == NULL) return;
-    if (level == 1) printf("%d ", root->data);
-    else {
-        printLevel(root->left, level - 1);
-        printLevel(root->right, level - 1);
+void bfs(int start, int n) {
+    visited[start] = 1;
+    enqueue(start);
+    printf("BFS order: ");
+
+    while (front <= rear) {
+        int v = dequeue();
+        printf("%d ", v);
+        for (int i = 0; i < n; i++) {
+            if (adj[v][i] && !visited[i]) {
+                visited[i] = 1;
+                enqueue(i);
+            }
+        }
     }
-}
-
-void bfs(struct Node* root) {
-    int h = height(root);
-    for (int i = 1; i <= h; i++)
-        printLevel(root, i);
+    printf("\n");
 }
 
 int main() {
-    struct Node* root = newNode(1);
-    root->left  = newNode(2);
-    root->right = newNode(3);
-    root->left->left  = newNode(4);
-    root->left->right = newNode(5);
+    int n, m, u, v, start;
+    printf("Enter number of vertices and edges: ");
+    scanf("%d %d", &n, &m);
 
-    printf("Level Order Traversal (BFS):\n");
-    bfs(root);
+    printf("Enter edges (u v):\n");
+    for (int i = 0; i < m; i++) {
+        scanf("%d %d", &u, &v);
+        adj[u][v] = adj[v][u] = 1; // undirected
+    }
+
+    printf("Enter start vertex: ");
+    scanf("%d", &start);
+
+    bfs(start, n);
     return 0;
 }
 
