@@ -163,7 +163,7 @@ void bfs(int start, int n) {
             }
         }
     }
-    printf("\n");// n
+    printf("");// n
 }
 
 int main() {
@@ -171,7 +171,7 @@ int main() {
     printf("Enter number of vertices and edges: ");
     scanf("%d %d", &n, &m);
 
-    printf("Enter edges (u v): \n");//n
+    printf("Enter edges (u v):");//n
     for (int i = 0; i < m; i++) {
         scanf("%d %d", &u, &v);
         adj[u][v] = adj[v][u] = 1; // undirected
@@ -183,6 +183,8 @@ int main() {
     bfs(start, n);
     return 0;
 }
+
+
 
 `,
 
@@ -375,6 +377,120 @@ int main() {
     dijkstra(graph, 0);
     return 0;
 }
+
+`,
+travelling_sales: `#include <stdio.h>
+#include <limits.h>
+
+#define N 4  // Number of cities
+
+int tsp(int graph[N][N], int visited[], int currPos, int n, int count, int cost, int *ans) {
+    if (count == n && graph[currPos][0]) {
+        // If all cities visited and there is a path back to start
+        if (cost + graph[currPos][0] < *ans) {
+            *ans = cost + graph[currPos][0];
+        }
+        return *ans;
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (visited[i] == 0 && graph[currPos][i]) {
+            visited[i] = 1;
+            tsp(graph, visited, i, n, count + 1, cost + graph[currPos][i], ans);
+            visited[i] = 0;
+        }
+    }
+    return *ans;
+}
+
+int main() {
+    int graph[N][N] = {
+        {0, 10, 15, 20},
+        {10, 0, 35, 25},
+        {15, 35, 0, 30},
+        {20, 25, 30, 0}
+    };
+
+    int visited[N];
+    for (int i = 0; i < N; i++)
+        visited[i] = 0;
+
+    visited[0] = 1; // start from city 0
+    int ans = INT_MAX;
+
+    int min_cost = tsp(graph, visited, 0, N, 1, 0, &ans);
+
+    printf("Minimum cost of travelling salesperson: %d\n", min_cost);
+
+    return 0;
+}
+
+
+`,
+subsetsum: `
+#include <stdio.h>
+#include <stdbool.h>
+
+bool isSubsetSum(int set[], int n, int sum, int subset[], int *subsetSize) {
+    bool dp[n+1][sum+1];
+
+    // Initialize the dp array
+    for (int i = 0; i <= n; i++)
+        dp[i][0] = true;
+
+    for (int j = 1; j <= sum; j++)
+        dp[0][j] = false;
+
+    // Fill the dp table
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= sum; j++) {
+            if (set[i-1] > j)
+                dp[i][j] = dp[i-1][j];
+            else
+                dp[i][j] = dp[i-1][j] || dp[i-1][j - set[i-1]];
+        }
+    }
+
+    // If no subset found
+    if (!dp[n][sum])
+        return false;
+
+    // Trace back to find the subset
+    int i = n, j = sum;
+    *subsetSize = 0;
+
+    while (i > 0 && j > 0) {
+        if (dp[i][j] != dp[i-1][j]) {
+            subset[(*subsetSize)++] = set[i-1];
+            j -= set[i-1];
+        }
+        i--;
+    }
+
+    return true;
+}
+
+int main() {
+    int set[] = {3, 2};
+    int sum = 5;
+    int n = sizeof(set) / sizeof(set[0]);
+
+    int subset[n];  // Max size = n
+    int subsetSize = 0;
+
+    if (isSubsetSum(set, n, sum, subset, &subsetSize)) {
+        printf("Subset with the given sum exists.Subset: ");
+        for (int i = 0; i < subsetSize; i++) {
+            printf("%d ", subset[i]);
+        }
+        printf("");//n
+    } else {
+        printf("No subset with the given sum exists.");
+    }
+
+    return 0;
+}
+
 
 `,
 
