@@ -163,7 +163,7 @@ void bfs(int start, int n) {
             }
         }
     }
-    printf("\n");
+    printf("\n");// n
 }
 
 int main() {
@@ -171,7 +171,7 @@ int main() {
     printf("Enter number of vertices and edges: ");
     scanf("%d %d", &n, &m);
 
-    printf("Enter edges (u v):\n");
+    printf("Enter edges (u v): \n");//n
     for (int i = 0; i < m; i++) {
         scanf("%d %d", &u, &v);
         adj[u][v] = adj[v][u] = 1; // undirected
