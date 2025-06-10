@@ -409,7 +409,7 @@ int main() {
 
     int min_cost = tsp(graph, visited, 0, N, 1, 0, &ans);
 
-    printf("Minimum cost of travelling salesperson: %d\n", min_cost);
+    printf("Minimum cost of travelling salesperson: %d", min_cost);//n
 
     return 0;
 }
@@ -418,65 +418,48 @@ int main() {
 `,
 subsetsum: `
 #include <stdio.h>
-#include <stdbool.h>
 
-bool isSubsetSum(int set[], int n, int sum, int subset[], int *subsetSize) {
-    bool dp[n+1][sum+1];
+int w[] = {10, 7, 5, 18, 12, 20, 15};  // Input set
+int x[100];                            // Tracks subset selection (0 or 1)
+int n = sizeof(w) / sizeof(w[0]);     // Number of elements
+int M = 35;                            // Target sum
 
-    // Initialize the dp array
-    for (int i = 0; i <= n; i++)
-        dp[i][0] = true;
+void printSubset() {
+    printf("Subset: ");
+    for (int i = 0; i < n; i++) {
+        if (x[i])
+            printf("%d ", w[i]);
+    }
+    printf("");//n
+}
 
-    for (int j = 1; j <= sum; j++)
-        dp[0][j] = false;
-
-    // Fill the dp table
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= sum; j++) {
-            if (set[i-1] > j)
-                dp[i][j] = dp[i-1][j];
-            else
-                dp[i][j] = dp[i-1][j] || dp[i-1][j - set[i-1]];
-        }
+void sumSubset(int i, int currSum, int remSum) {
+    if (currSum == M) {
+        printSubset();
+        return;
     }
 
-    // If no subset found
-    if (!dp[n][sum])
-        return false;
+    if (i == n || currSum + remSum < M)
+        return;
 
-    // Trace back to find the subset
-    int i = n, j = sum;
-    *subsetSize = 0;
-
-    while (i > 0 && j > 0) {
-        if (dp[i][j] != dp[i-1][j]) {
-            subset[(*subsetSize)++] = set[i-1];
-            j -= set[i-1];
-        }
-        i--;
+    // Include w[i] if it doesn't exceed the target
+    if (currSum + w[i] <= M) {
+        x[i] = 1;
+        sumSubset(i + 1, currSum + w[i], remSum - w[i]);
     }
 
-    return true;
+    // Exclude w[i]
+    x[i] = 0;
+    sumSubset(i + 1, currSum, remSum - w[i]);
 }
 
 int main() {
-    int set[] = {3, 2};
-    int sum = 5;
-    int n = sizeof(set) / sizeof(set[0]);
+    int total = 0;
+    for (int i = 0; i < n; i++)
+        total += w[i];
 
-    int subset[n];  // Max size = n
-    int subsetSize = 0;
-
-    if (isSubsetSum(set, n, sum, subset, &subsetSize)) {
-        printf("Subset with the given sum exists.Subset: ");
-        for (int i = 0; i < subsetSize; i++) {
-            printf("%d ", subset[i]);
-        }
-        printf("");//n
-    } else {
-        printf("No subset with the given sum exists.");
-    }
-
+    printf("All subsets of given array with sum = %d:", M);//n
+    sumSubset(0, 0, total);
     return 0;
 }
 
