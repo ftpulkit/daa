@@ -220,66 +220,55 @@ int main() {
     }
 
     if (allDistinct)
-        printf("All elements are distinct.\n");
+        printf("All elements are distinct.");//n at all ends in n in this code
     else
-        printf("Not all elements are distinct.\n");
+        printf("Not all elements are distinct.");//n 
 
     return 0;
 }
 `,
 
-  horspool: `
-#include <stdio.h>
-#include <string.h>   
-#include <limits.h>   
+  horspool: `#include <stdio.h>
+#include <string.h>
 
-#define ALPHABET 256   
+#define ALPHABET 256
 
-void buildShift(const char *pat, int m, int shift[])
-{
-    for (int c = 0; c < ALPHABET; ++c)   
-        shift[c] = m;
-
-    for (int i = 0; i < m - 1; ++i)      
-        shift[(unsigned char)pat[i]] = m - 1 - i;
-}
-
-int horspool(const char *text, const char *pat)
-{
+int horspool(const char *text, const char *pat) {
     int n = strlen(text);
     int m = strlen(pat);
     if (m == 0 || m > n) return -1;
 
     int shift[ALPHABET];
-    buildShift(pat, m, shift);
+    
+    for (int c = 0; c < ALPHABET; ++c)
+        shift[c] = m;
 
-    int i = m - 1;                       
+    for (int i = 0; i < m - 1; ++i)
+        shift[(unsigned char)pat[i]] = m - 1 - i;
+
+    int i = m - 1;
     while (i < n) {
-        int k = 0;                       
+        int k = 0;
         while (k < m && pat[m - 1 - k] == text[i - k])
-            ++k;                         
+            ++k;
 
-        if (k == m)                      
+        if (k == m)
             return i - m + 1;
 
-        i += shift[(unsigned char)text[i]];  
+        i += shift[(unsigned char)text[i]];
     }
-    return -1;                           
+    return -1;
 }
 
-int main(void)
-{
-    char text[200], pat[50];
-    printf("Text   : "); fgets(text, sizeof(text), stdin);
-    printf("Pattern: "); fgets(pat,  sizeof(pat),  stdin);
+int main(void) {
+    const char text[] = "arber";
+    const char pat[] = "ber";
 
-    text[strcspn(text, "\n")] = pat[strcspn(pat, "\n")] = '\0';
-//n n 0
-    int pos = horspool(text, pat);
-    if (pos == -1)
-        puts("Pattern NOT found.");
+    int index = horspool(text, pat);
+    if (index != -1)
+        printf("Pattern found at index: %d", index);//n
     else
-        printf("Pattern found at index %d.\n", pos);
+        printf("Pattern not found.");//n
 
     return 0;
 }
